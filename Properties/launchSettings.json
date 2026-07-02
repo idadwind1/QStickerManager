@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "QStickerManager (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "QStickerManager (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}
