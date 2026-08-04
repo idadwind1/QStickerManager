@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Window
+    x:Class="QStickerManager.Windows.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:animatedvisuals="using:Microsoft.UI.Xaml.Controls.AnimatedVisuals"
+    xmlns:stickers="using:QStickerManager.Stickers"
+    mc:Ignorable="d"
+    Title="QStickerManager"
+    Closed="Window_Closed">
+
+    <Window.SystemBackdrop>
+        <MicaBackdrop />
+    </Window.SystemBackdrop>
+
+
+
+    <Grid RowDefinitions="Auto,Auto,*,Auto"
+          Padding="16"
+          RowSpacing="16">
+        <!-- Top Bar -->
+        <Grid Grid.Row="0"
+              ColumnDefinitions="*,Auto,Auto,Auto,Auto"
+              ColumnSpacing="6">
+
+            <AutoSuggestBox
+                Grid.Column="0"
+                PlaceholderText="Search stickers..."
+                QueryIcon="Find" />
+
+            <Button
+                Grid.Column="1"
+                Content="Import">
+                <Button.Flyout>
+                    <Flyout>
+                        <StackPanel>
+                            <TextBlock Text="Import from?" Margin="0,0,0,12" />
+                            <StackPanel
+                                Orientation="Horizontal"
+                                Spacing="8">
+                                <Button Content="Files" Click="ImportFiles_Click" />
+                                <Button Content="Zip" Click="ImportZip_Click" />
+                                <Button Content="Folders" Click="ImportFolders_Click" />
+                                <Button Content="QQ" Click="ImportQQ_Click" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Flyout>
+                </Button.Flyout>
+            </Button>
+
+            <Button
+                Grid.Column="2"
+                Content="Select"
+                Click="SelectButton_Click"
+                Name="SelectButton" />
+
+            <Button
+                Grid.Column="3"
+                IsEnabled="False"
+                Name="ActionButton">
+                <Button.Flyout>
+                    <MenuFlyout>
+                        <MenuFlyoutSubItem Text="Export">
+                            <MenuFlyoutSubItem.Icon>
+                                <FontIcon Glyph="&#xEE71;"/>
+                            </MenuFlyoutSubItem.Icon>
+                            <MenuFlyoutItem Text="Export as zip file" Click="ExportZipFile_Click" />
+                            <MenuFlyoutItem Text="Export as files" Click="ExportFiles_Click" />
+                        </MenuFlyoutSubItem>
+                        <MenuFlyoutItem Text="Copy" Click="CopySelected_Click" Icon="Copy" />
+                        <MenuFlyoutItem Text="Remove" Click="RemoveSelected_Click" Icon="Delete" />
+                        <MenuFlyoutItem Text="Move to front" Click="SelectedMoveToFront_Click" Icon="Up" />
+                    </MenuFlyout>
+                </Button.Flyout>
+                <FontIcon Glyph="&#xE712;" />
+            </Button>
+
+            <Button
+                Grid.Column="4"
+                Height="32">
+                <AnimatedIcon x:Name="SettingsAnimatedIcon">
+                    <AnimatedIcon.Source>
+                        <animatedvisuals:AnimatedSettingsVisualSource/>
+                    </AnimatedIcon.Source>
+                    <AnimatedIcon.FallbackIconSource>
+                        <SymbolIconSource Symbol="Setting"/>
+                    </AnimatedIcon.FallbackIconSource>
+                </AnimatedIcon>
+
+            </Button>
+        </Grid>
+
+        <!-- Categories -->
+        <ScrollViewer
+            Grid.Row="1"
+            HorizontalScrollMode="Enabled"
+            HorizontalScrollBarVisibility="Hidden"
+            VerticalScrollMode="Disabled">
+
+            <StackPanel
+                Orientation="Horizontal"
+                Spacing="8">
+
+                <ToggleButton Content="Recent"/>
+                <ToggleButton Content="Favorites"/>
+
+                <Button Content="+" />
+
+            </StackPanel>
+
+        </ScrollViewer>
+
+        <!-- Sticker Grid -->
+        <ScrollViewer Grid.Row="2">
+
+            <GridView
+                Grid.Row="2"
+                ItemsSource="{x:Bind stickerRepository.Stickers, Mode=OneWay}"
+                IsItemClickEnabled="True"
+                SelectionMode="Single"
+                CanReorderItems="True"
+                CanDragItems="True"
+                AllowDrop="True"
+                Name="StickersGridView"
+                ItemClick="StickersGridView_ItemClick"
+                DragOver="StickersGridView_DragOver"
+                Drop="StickersGridView_Drop"
+                DragItemsStarting="StickersGridView_DragItemsStarting"
+                DragItemsCompleted="StickersGridView_DragItemsCompleted"
+                SelectionChanged="StickersGridView_SelectionChanged">
+
+                <GridView.ItemTemplate>
+                    <DataTemplate x:DataType="stickers:Sticker">
+                        <Grid>
+                            <Image Source="{x:Bind ThumbnailPath}"
+                                Width="100"
+                                Height="100"
+                                Stretch="UniformToFill"
+                                PointerEntered="Sticker_PointerEntered" />
+
+                            <Grid.ContextFlyout>
+                                <MenuFlyout>
+                                    <MenuFlyoutItem Text="Copy" Click="CopySticker_Click" Icon="Copy" />
+                                    <MenuFlyoutItem Text="Export" Click="ExportSticker_Click" Icon="Share" />
+                                    <MenuFlyoutItem Text="Remove" Click="RemoveSticker_Click" Icon="Delete" />
+                                    <MenuFlyoutItem Text="Move to front" Click="StickerMoveToFront_Click" Icon="Up" />
+                                </MenuFlyout>
+                            </Grid.ContextFlyout>
+
+                            <ToolTipService.ToolTip>
+                                <ToolTip>
+                                    <StackPanel>
+                                        <Image Source="{x:Bind Path}"
+                                            MaxHeight="200"
+                                            MaxWidth="300"
+                                            Stretch="Uniform"/>
+                                    </StackPanel>
+                                </ToolTip>
+                            </ToolTipService.ToolTip>
+                        </Grid>
+                    </DataTemplate>
+                </GridView.ItemTemplate>
+
+            </GridView>
+
+        </ScrollViewer>
+
+        <!-- Bottom Status Bar -->
+        <Grid Grid.Row="3"
+              ColumnDefinitions="*,Auto,Auto">
+
+            <TextBlock
+                VerticalAlignment="Center"
+                Name="StatusTextLeft" />
+
+            <TextBlock
+                Grid.Column="1"
+                Margin="16,0"
+                VerticalAlignment="Center"
+                Name="StatusTextRight1" />
+
+            <TextBlock
+                Grid.Column="1"
+                Margin="16,0"
+                VerticalAlignment="Center"
+                Name="StatusTextRight2" />
+        </Grid>
+    </Grid>
+</Window>
