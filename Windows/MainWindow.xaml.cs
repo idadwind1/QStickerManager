@@ -2,6 +2,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.Windows.Storage.Pickers;
 using QStickerManager.Pages;
+using QStickerManager.Settings;
 using QStickerManager.Stickers;
 using System;
 using System.Collections.Generic;
@@ -25,16 +26,17 @@ namespace QStickerManager.Windows
         public MainWindow()
         {
             InitializeComponent();
-            string basePath =
-                Path.Combine(ApplicationData.Current.LocalFolder.Path, "QStickerManager");
-            stickerRepository = new(basePath);
-            stickerRepository.LoadMetaFile();
-            RefreshStickers();
+            appSettings = new AppSettings();
+            basePath = appSettings.BasePath;
+            ReloadStickerRepository();
         }
 
-        private readonly StickerRepository stickerRepository;
+        private readonly AppSettings appSettings;
+        private string basePath;
+        private StickerRepository stickerRepository = null!;
         private readonly StickerArchiveService stickerArchiveService = new();
         private bool isDraggingFromGrid;
+        private Settings? settingsWindow;
 
         private async void ImportFiles_Click(object sender, RoutedEventArgs e)
         {
@@ -307,6 +309,35 @@ namespace QStickerManager.Windows
         private void Window_Closed(object sender, WindowEventArgs args)
         {
             stickerRepository.UpdateMetaFile();
+        }
+
+        private void SettingsButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (settingsWindow is not null)
+            {
+                settingsWindow.Activate();
+                return;
+            }
+
+            settingsWindow = new Settings(appSettings, stickerRepository);
+            settingsWindow.StoragePathChanged += Settings_StoragePathChanged;
+            settingsWindow.Closed += (_, _) => settingsWindow = null;
+            settingsWindow.Activate();
+        }
+
+        private void Settings_StoragePathChanged(object? sender, EventArgs e)
+        {
+            ReloadStickerRepository();
+        }
+
+        private void ReloadStickerRepository()
+        {
+            basePath = appSettings.BasePath;
+            stickerRepository = new StickerRepository(basePath);
+            stickerRepository.LoadMetaFile();
+            StickersGridView.ItemsSource = null;
+            StickersGridView.ItemsSource = stickerRepository.Stickers;
+            RefreshStickers();
         }
 
         private bool isSelecting = false;

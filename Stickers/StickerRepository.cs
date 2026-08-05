@@ -11,18 +11,18 @@ namespace QStickerManager.Stickers
     public class StickerRepository
     {
         private readonly Dictionary<string, Sticker> _stickers;
-        private readonly string BasePath;
-        private readonly string MetaFilePath;
-        private readonly string StickerDirectoryPath;
+        private string BasePath;
+        private string MetaFilePath;
+        private string StickerDirectoryPath;
         private const string StickersDirectoryName = "stickers";
         private const string MetaFileName = "meta.json";
 
         public StickerRepository(string basePath)
         {
             _stickers = [];
-            BasePath = basePath;
+            BasePath = Path.GetFullPath(basePath);
             MetaFilePath = Path.Combine(BasePath, MetaFileName);
-            StickerDirectoryPath = Path.Combine(BasePath, StickersDirectoryName);
+            StickerDirectoryPath = GetStickerDirectory(BasePath);
             Stickers = [];
             imageProcessor = new ImageProcessor();
 
@@ -31,6 +31,13 @@ namespace QStickerManager.Stickers
         }
 
         public ObservableCollection<Sticker> Stickers;
+
+        public string LibraryDirectory => BasePath;
+
+        public string StickerDirectory => StickerDirectoryPath;
+
+        private static string GetStickerDirectory(string basePath)
+            => Path.Combine(basePath, StickersDirectoryName);
 
         /// <summary>
         /// Load sticker list from meta.json
@@ -51,9 +58,18 @@ namespace QStickerManager.Stickers
                 if (stickers is null) return;
 
                 foreach (var sticker in stickers)
+                {
+                    NormalizeStickerPaths(sticker);
                     AddSticker(sticker);
+                }
             }
             catch (JsonException) { }
+        }
+
+        private void NormalizeStickerPaths(Sticker sticker)
+        {
+            sticker.Path = Path.Combine(StickerDirectoryPath, Path.GetFileName(sticker.Path));
+            sticker.ThumbnailPath = Path.Combine(StickerDirectoryPath, Path.GetFileName(sticker.ThumbnailPath));
         }
 
         private readonly JsonSerializerOptions JsonSerializerOptions = new() { WriteIndented = true };
@@ -134,6 +150,85 @@ namespace QStickerManager.Stickers
                 imageProcessor.ConvertToGif(sticker.Path, gifPath);
 
             return gifPath;
+        }
+
+        public int ClearGifCache()
+        {
+            HashSet<string> managedStickerPaths = new(
+                Stickers.Select(sticker => Path.GetFullPath(sticker.Path)),
+                StringComparer.OrdinalIgnoreCase);
+            int deletedCount = 0;
+
+            foreach (string gifPath in Directory.EnumerateFiles(StickerDirectoryPath, "*.gif"))
+            {
+                if (managedStickerPaths.Contains(Path.GetFullPath(gifPath)))
+                    continue;
+
+                File.Delete(gifPath);
+                deletedCount++;
+            }
+
+            return deletedCount;
+        }
+
+        public List<string> GetBasePathMigrationConflicts(string newBasePath)
+        {
+            string normalizedBasePath = Path.GetFullPath(newBasePath);
+            if (string.Equals(BasePath, normalizedBasePath, StringComparison.OrdinalIgnoreCase)
+                || !Directory.Exists(BasePath))
+                return [];
+
+            return Directory.EnumerateFiles(BasePath, "*", SearchOption.AllDirectories)
+                .Select(filePath => Path.Combine(
+                    normalizedBasePath,
+                    Path.GetRelativePath(BasePath, filePath)))
+                .Where(File.Exists)
+                .Select(filePath => Path.GetRelativePath(normalizedBasePath, filePath))
+                .ToList();
+        }
+
+        public void ChangeBasePath(
+            string newBasePath,
+            bool migrateExistingFiles,
+            bool overwriteExistingFiles = false)
+        {
+            string normalizedBasePath = Path.GetFullPath(newBasePath);
+            if (string.Equals(BasePath, normalizedBasePath, StringComparison.OrdinalIgnoreCase))
+                return;
+
+            string oldBasePath = BasePath;
+            Directory.CreateDirectory(normalizedBasePath);
+
+            if (migrateExistingFiles && Directory.Exists(oldBasePath))
+            {
+                foreach (string filePath in Directory.EnumerateFiles(oldBasePath, "*", SearchOption.AllDirectories))
+                {
+                    string relativePath = Path.GetRelativePath(oldBasePath, filePath);
+                    string destinationPath = Path.Combine(normalizedBasePath, relativePath);
+                    Directory.CreateDirectory(Path.GetDirectoryName(destinationPath)!);
+                    File.Move(filePath, destinationPath, overwriteExistingFiles);
+                }
+
+                if (!Directory.EnumerateFileSystemEntries(oldBasePath).Any())
+                    Directory.Delete(oldBasePath);
+            }
+
+            BasePath = normalizedBasePath;
+            MetaFilePath = Path.Combine(BasePath, MetaFileName);
+            StickerDirectoryPath = GetStickerDirectory(BasePath);
+
+            foreach (Sticker sticker in Stickers)
+                {
+                sticker.Path = Path.Combine(StickerDirectoryPath, Path.GetFileName(sticker.Path));
+                sticker.ThumbnailPath = Path.Combine(StickerDirectoryPath, Path.GetFileName(sticker.ThumbnailPath));
+            }
+
+            List<Sticker> currentOrder = [.. Stickers];
+            Stickers.Clear();
+            foreach (Sticker sticker in currentOrder)
+                Stickers.Add(sticker);
+
+            UpdateMetaFile();
         }
 
         /// <summary>

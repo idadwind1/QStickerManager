@@ -79,7 +79,8 @@
 
             <Button
                 Grid.Column="4"
-                Height="32">
+                Height="32"
+                Click="SettingsButton_Click">
                 <AnimatedIcon x:Name="SettingsAnimatedIcon">
                     <AnimatedIcon.Source>
                         <animatedvisuals:AnimatedSettingsVisualSource/>

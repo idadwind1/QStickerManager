@@ -13,7 +13,129 @@
         <MicaBackdrop />
     </Window.SystemBackdrop>
 
-    <Grid>
+    <ScrollViewer>
+        <StackPanel
+            MaxWidth="760"
+            Padding="32"
+            Spacing="24"
+            HorizontalAlignment="Center">
 
-    </Grid>
+            <TextBlock
+                Text="Settings"
+                Style="{StaticResource SubtitleTextBlockStyle}" />
+
+            <StackPanel Spacing="8">
+                <TextBlock
+                    Text="Storage"
+                    Style="{StaticResource BodyStrongTextBlockStyle}" />
+
+                <Border
+                    Padding="16"
+                    CornerRadius="8"
+                    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}">
+                    <Grid
+                        ColumnDefinitions="Auto,*,Auto,Auto"
+                        RowDefinitions="Auto,Auto">
+                        <TextBlock
+                            Grid.Column="0"
+                            Text="Library location"
+                            FontSize="16" />
+                        <TextBlock
+                            Grid.Column="0"
+                            Grid.Row="1"
+                            Text="The folder containing meta.json, stickers, thumbnails, and generated GIFs."
+                            TextWrapping="Wrap"
+                            Opacity="0.7"
+                            Margin="0,4,16,0" />
+                        <Button
+                            Grid.Column="1"
+                            Grid.RowSpan="2"
+                            Content="Open folder"
+                            Click="OpenStickerFolder_Click"
+                            VerticalAlignment="Center" />
+                        <Button
+                            Grid.Column="2"
+                            Grid.RowSpan="2"
+                            Content="Change location"
+                            Click="ChangeStickerLocation_Click"
+                            VerticalAlignment="Center"
+                            Margin="8,0,0,0" />
+                    </Grid>
+                </Border>
+
+                <TextBox
+                    x:Name="BasePathText"
+                    Text="{x:Bind LibraryDirectory}"
+                    IsReadOnly="True"
+                    IsHitTestVisible="False"
+                    TextWrapping="Wrap"
+                    Header="Path" />
+
+                <Button
+                    Content="Reset to default"
+                    Click="ResetSettings_Click"
+                    HorizontalAlignment="Left" />
+            </StackPanel>
+
+            <StackPanel Spacing="8">
+                <TextBlock
+                    Text="Maintenance"
+                    Style="{StaticResource BodyStrongTextBlockStyle}" />
+
+                <Border
+                    Padding="16"
+                    CornerRadius="8"
+                    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <StackPanel
+                            Grid.Column="0"
+                            Spacing="4">
+                            <TextBlock
+                                Grid.Column="0"
+                                Text="Clear GIF cache"
+                                FontSize="16" />
+                            <TextBlock
+                                Grid.Column="0"
+                                Text="Deletes generated GIF files. Original stickers and thumbnails are kept."
+                                TextWrapping="Wrap"
+                                Opacity="0.7" />
+                        </StackPanel>
+                        <Button
+                            Grid.Column="1"
+                            Content="Clear cache"
+                            Click="ClearCache_Click"
+                            VerticalAlignment="Center"
+                            Margin="16,0,0,0" />
+                    </Grid>
+                </Border>
+            </StackPanel>
+
+            <StackPanel Spacing="8">
+                <TextBlock
+                    Text="About"
+                    Style="{StaticResource BodyStrongTextBlockStyle}" />
+
+                <Border
+                    Padding="16"
+                    CornerRadius="8"
+                    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}">
+                    <Grid ColumnDefinitions="Auto,*">
+                        <StackPanel
+                            Grid.Column="0"
+                            Spacing="8">
+                        <TextBlock
+                            Text="QStickerManager"
+                            FontSize="16" />
+                        <TextBlock
+                            Text="{x:Bind VersionText}" />
+                        <HyperlinkButton
+                            Content="GitHub"
+                            NavigateUri="https://github.com/idadwind1/QStickerManager"
+                            HorizontalAlignment="Left" />
+                        </StackPanel>
+                    </Grid>
+                </Border>
+            </StackPanel>
+        </StackPanel>
+    </ScrollViewer>
 </Window>
