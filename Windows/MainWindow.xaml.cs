@@ -449,6 +449,38 @@ namespace QStickerManager.Windows
             StatusTextRight2.Text = $"{Path.GetFileName(sticker.Path)} copied to clipboard";
         }
 
+        private async void EditStickerDescription_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is not MenuFlyoutItem item || item.DataContext is not Sticker sticker)
+                return;
+
+            TextBox descriptionBox = new()
+            {
+                Text = sticker.Description,
+                PlaceholderText = "Enter a description",
+                AcceptsReturn = true,
+                TextWrapping = TextWrapping.Wrap,
+                MinWidth = 320,
+                MaxWidth = 520
+            };
+
+            ContentDialog dialog = new()
+            {
+                Title = "Edit sticker description",
+                Content = descriptionBox,
+                PrimaryButtonText = "Save",
+                CloseButtonText = "Cancel",
+                XamlRoot = Content.XamlRoot
+            };
+
+            if (await dialog.ShowAsync() != ContentDialogResult.Primary)
+                return;
+
+            sticker.Description = descriptionBox.Text.Trim();
+            stickerRepository.UpdateMetaFile();
+            StatusTextLeft.Text = sticker.Description;
+        }
+
         private async void CopySelected_Click(object sender, RoutedEventArgs e)
         {
             List<Sticker> stickers = [.. StickersGridView.SelectedItems.Cast<Sticker>()];

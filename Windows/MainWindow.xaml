@@ -144,6 +144,7 @@
                             <Grid.ContextFlyout>
                                 <MenuFlyout>
                                     <MenuFlyoutItem Text="Copy" Click="CopySticker_Click" Icon="Copy" />
+                                    <MenuFlyoutItem Text="Edit description" Click="EditStickerDescription_Click" Icon="Edit" />
                                     <MenuFlyoutItem Text="Export" Click="ExportSticker_Click" Icon="Share" />
                                     <MenuFlyoutItem Text="Remove" Click="RemoveSticker_Click" Icon="Delete" />
                                     <MenuFlyoutItem Text="Move to front" Click="StickerMoveToFront_Click" Icon="Up" />
