@@ -28,7 +28,9 @@ namespace QStickerManager.Windows
             InitializeComponent();
             appSettings = new AppSettings();
             basePath = appSettings.BasePath;
-            ReloadStickerRepository();
+            stickerRepository = new StickerRepository(basePath);
+            StickersGridView.ItemsSource = stickerRepository.Stickers;
+            _ = ReloadStickerRepositoryAsync();
         }
 
         private readonly AppSettings appSettings;
@@ -325,16 +327,23 @@ namespace QStickerManager.Windows
             settingsWindow.Activate();
         }
 
-        private void Settings_StoragePathChanged(object? sender, EventArgs e)
+        private async void Settings_StoragePathChanged(object? sender, EventArgs e)
         {
-            ReloadStickerRepository();
+            await ReloadStickerRepositoryAsync();
         }
 
-        private void ReloadStickerRepository()
+        private async Task ReloadStickerRepositoryAsync()
         {
-            basePath = appSettings.BasePath;
-            stickerRepository = new StickerRepository(basePath);
-            stickerRepository.LoadMetaFile();
+            string requestedBasePath = appSettings.BasePath;
+            StickerRepository loadedRepository = await Task.Run(() =>
+            {
+                StickerRepository repository = new(requestedBasePath);
+                repository.LoadMetaFile();
+                return repository;
+            });
+
+            basePath = requestedBasePath;
+            stickerRepository = loadedRepository;
             StickersGridView.ItemsSource = null;
             StickersGridView.ItemsSource = stickerRepository.Stickers;
             RefreshStickers();
