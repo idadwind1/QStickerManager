@@ -1,11 +1,15 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.Windows.Storage.Pickers;
+using QStickerManager.Localization;
 using QStickerManager.Pages;
 using QStickerManager.Settings;
 using QStickerManager.Stickers;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -29,6 +33,7 @@ namespace QStickerManager.Windows
             appSettings = new AppSettings();
             basePath = appSettings.BasePath;
             stickerRepository = new StickerRepository(basePath);
+            stickerRepository.Stickers.CollectionChanged += RepositoryStickers_CollectionChanged;
             StickersGridView.ItemsSource = stickerRepository.Stickers;
             _ = ReloadStickerRepositoryAsync();
         }
@@ -39,6 +44,8 @@ namespace QStickerManager.Windows
         private readonly StickerArchiveService stickerArchiveService = new();
         private bool isDraggingFromGrid;
         private Settings? settingsWindow;
+        private readonly HashSet<string> activeKeywordFilters = new(StringComparer.OrdinalIgnoreCase);
+        private readonly ObservableCollection<Sticker> filteredStickers = [];
 
         private async void ImportFiles_Click(object sender, RoutedEventArgs e)
         {
@@ -80,7 +87,9 @@ namespace QStickerManager.Windows
                         "Tencent Files");
             if (!Directory.Exists(qqDataPath))
             {
-                await MessageBox("Files not found", "Did not found QQ stickers. Might be moved?");
+                await MessageBox(
+                    Localizer.Get("QQFilesNotFound_Title"),
+                    Localizer.Get("QQFilesNotFound_Message"));
                 return;
             }
 
@@ -91,10 +100,10 @@ namespace QStickerManager.Windows
                 SelectQQUsersContentDialogContent dialogContent = new(users);
                 ContentDialog dialog = new()
                 {
-                    Title = "Sticker Already Exists",
+                    Title = Localizer.Get("SelectQQUsers_Title"),
                     Content = dialogContent,
-                    PrimaryButtonText = "OK",
-                    CloseButtonText = "Cancel",
+                    PrimaryButtonText = Localizer.Get("Button_OK"),
+                    CloseButtonText = Localizer.Get("Button_Cancel"),
                     XamlRoot = Content.XamlRoot
                 };
 
@@ -120,7 +129,14 @@ namespace QStickerManager.Windows
 
         private async Task ImportStickers(IEnumerable<string> filesPath)
         {
-            await ImportStickers(await GetImportCandidatesAsync(filesPath));
+            StatusTextLeft.Text = Localizer.Get("Status_Importing");
+            var candidates = await GetImportCandidatesAsync(filesPath);
+            StatusTextLeft.Text = Localizer.FormatCount(
+                candidates.Count,
+                "Status_ImportingCountOne",
+                "Status_ImportingCountMany");
+            await ImportStickers(candidates);
+            StatusTextLeft.Text = Localizer.Get("Status_ImportComplete");
         }
 
         private async Task ImportStickers(IEnumerable<StickerImportSource> stickersToImport)
@@ -152,11 +168,11 @@ namespace QStickerManager.Windows
                     StickerFoundContentDialogContent dialogContent = new(stickerToImport.Path, importResult.hash);
                     ContentDialog dialog = new()
                     {
-                        Title = "Sticker Already Exists",
+                        Title = Localizer.Get("StickerExists_Title"),
                         Content = dialogContent,
-                        PrimaryButtonText = "Skip",
-                        SecondaryButtonText = "Skip for all",
-                        CloseButtonText = "Abort",
+                        PrimaryButtonText = Localizer.Get("Button_Skip"),
+                        SecondaryButtonText = Localizer.Get("Button_SkipAll"),
+                        CloseButtonText = Localizer.Get("Button_Abort"),
                         XamlRoot = Content.XamlRoot
                     };
 
@@ -177,6 +193,7 @@ namespace QStickerManager.Windows
                     stickerToImport.Cleanup();
                 }
             }
+
             stickerRepository.UpdateMetaFile();
             RefreshStickers();
         }
@@ -204,7 +221,89 @@ namespace QStickerManager.Windows
         private void RefreshStickers()
         {
             int count = stickerRepository.Stickers.Count;
-            StatusTextRight2.Text = $"{count} sticker{(count == 1 ? "" : "s")} loaded";
+            StatusTextRight2.Text = Localizer.FormatCount(count, "Status_LoadedOne", "Status_LoadedMany");
+            RefreshKeywordFilters();
+            RefreshStickerGrid();
+        }
+
+        private void SearchBox_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
+        {
+            RefreshStickerGrid();
+        }
+
+        private void RefreshKeywordFilters()
+        {
+            activeKeywordFilters.RemoveWhere(activeFilter =>
+                !stickerRepository.Keywords.Any(keyword =>
+                    string.Equals(keyword, activeFilter, StringComparison.OrdinalIgnoreCase)));
+
+            while (KeywordFiltersPanel.Children.Count > 1)
+                KeywordFiltersPanel.Children.RemoveAt(1);
+
+            NoKeywordsText.Visibility = stickerRepository.Keywords.Count == 0
+                ? Visibility.Visible
+                : Visibility.Collapsed;
+
+            foreach (string keyword in stickerRepository.Keywords)
+            {
+                ToggleButton filter = new()
+                {
+                    Content = keyword,
+                    Tag = keyword,
+                    IsChecked = activeKeywordFilters.Contains(keyword)
+                };
+                filter.Checked += KeywordFilter_Changed;
+                filter.Unchecked += KeywordFilter_Changed;
+                KeywordFiltersPanel.Children.Add(filter);
+            }
+        }
+
+        private void KeywordFilter_Changed(object sender, RoutedEventArgs e)
+        {
+            if (sender is not ToggleButton filter || filter.Tag is not string keyword)
+                return;
+
+            if (filter.IsChecked == true)
+                activeKeywordFilters.Add(keyword);
+            else
+                activeKeywordFilters.Remove(keyword);
+
+            RefreshStickerGrid();
+        }
+
+        private void RefreshStickerGrid()
+        {
+            string query = SearchBox.Text.Trim();
+            bool hasSearch = !string.IsNullOrWhiteSpace(query);
+            bool hasKeywordFilter = activeKeywordFilters.Count > 0;
+
+            if (!hasSearch && !hasKeywordFilter)
+            {
+                if (!ReferenceEquals(StickersGridView.ItemsSource, stickerRepository.Stickers))
+                    StickersGridView.ItemsSource = stickerRepository.Stickers;
+                return;
+            }
+
+            IEnumerable<Sticker> stickers = stickerRepository.Stickers;
+            if (hasSearch)
+                stickers = stickers.Where(sticker =>
+                    sticker.Hash.Contains(query, StringComparison.OrdinalIgnoreCase)
+                    || sticker.Description.Contains(query, StringComparison.OrdinalIgnoreCase)
+                    || sticker.Keywords.Any(keyword =>
+                        keyword.Contains(query, StringComparison.OrdinalIgnoreCase)));
+
+            if (hasKeywordFilter)
+                stickers = stickers.Where(sticker =>
+                    activeKeywordFilters.All(filter =>
+                        sticker.Keywords.Any(keyword =>
+                            string.Equals(keyword, filter, StringComparison.OrdinalIgnoreCase))));
+
+            filteredStickers.Clear();
+            foreach (Sticker sticker in stickers)
+                filteredStickers.Add(sticker);
+
+            if (!ReferenceEquals(StickersGridView.ItemsSource, filteredStickers))
+                StickersGridView.ItemsSource = filteredStickers;
         }
 
         private async Task MessageBox(string title, string message)
@@ -213,7 +312,7 @@ namespace QStickerManager.Windows
             {
                 Title = title,
                 Content = message,
-                CloseButtonText = "OK",
+                CloseButtonText = Localizer.Get("Button_OK"),
                 XamlRoot = Content.XamlRoot
             };
 
@@ -249,15 +348,17 @@ namespace QStickerManager.Windows
             List<Sticker> stickers = [.. StickersGridView.SelectedItems.Cast<Sticker>()];
             if (stickers.Count == 0)
             {
-                await MessageBox("No stickers selected", "Select one or more stickers before exporting.");
+                await MessageBox(
+                    Localizer.Get("NoStickersSelected_Title"),
+                    Localizer.Get("NoStickersSelected_Export"));
                 return;
             }
 
             FileSavePicker picker = new(AppWindow.Id)
             {
-                SuggestedFileName = "stickers"
+                SuggestedFileName = Localizer.Get("SuggestedFileName_Stickers")
             };
-            picker.FileTypeChoices.Add("Zip archive", [".zip"]);
+            picker.FileTypeChoices.Add(Localizer.Get("FileType_ZipArchive"), [".zip"]);
 
             PickFileResult? file = await picker.PickSaveFileAsync();
             string? path = file?.Path;
@@ -268,7 +369,10 @@ namespace QStickerManager.Windows
                 stickerArchiveService.WriteArchive(path, stickers);
             });
 
-            StatusTextRight2.Text = $"Exported {stickers.Count} sticker{(stickers.Count == 1 ? "" : "s")} to zip";
+            StatusTextRight2.Text = Localizer.FormatCount(
+                stickers.Count,
+                "Status_ExportedZipOne",
+                "Status_ExportedZipMany");
         }
 
         private async void ExportFiles_Click(object sender, RoutedEventArgs e)
@@ -291,7 +395,7 @@ namespace QStickerManager.Windows
             await CopyStickersToClipboard([sticker]);
             StatusTextLeft.Text = sticker.Description;
             StatusTextRight1.Text = string.Join(", ", sticker.Keywords);
-            StatusTextRight2.Text = $"{Path.GetFileName(sticker.Path)} copied to clipboard";
+            StatusTextRight2.Text = Localizer.Format("Status_CopiedFile", Path.GetFileName(sticker.Path));
         }
 
         private async Task CopyStickersToClipboard(IEnumerable<Sticker> stickers)
@@ -323,6 +427,7 @@ namespace QStickerManager.Windows
 
             settingsWindow = new Settings(appSettings, stickerRepository);
             settingsWindow.StoragePathChanged += Settings_StoragePathChanged;
+            settingsWindow.StickersChanged += Settings_StickersChanged;
             settingsWindow.Closed += (_, _) => settingsWindow = null;
             settingsWindow.Activate();
         }
@@ -330,6 +435,11 @@ namespace QStickerManager.Windows
         private async void Settings_StoragePathChanged(object? sender, EventArgs e)
         {
             await ReloadStickerRepositoryAsync();
+        }
+
+        private void Settings_StickersChanged(object? sender, EventArgs e)
+        {
+            RefreshStickerGrid();
         }
 
         private async Task ReloadStickerRepositoryAsync()
@@ -343,17 +453,23 @@ namespace QStickerManager.Windows
             });
 
             basePath = requestedBasePath;
+            stickerRepository.Stickers.CollectionChanged -= RepositoryStickers_CollectionChanged;
             stickerRepository = loadedRepository;
-            StickersGridView.ItemsSource = null;
-            StickersGridView.ItemsSource = stickerRepository.Stickers;
+            stickerRepository.Stickers.CollectionChanged += RepositoryStickers_CollectionChanged;
             RefreshStickers();
+        }
+
+        private void RepositoryStickers_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (!ReferenceEquals(StickersGridView.ItemsSource, stickerRepository.Stickers))
+                RefreshStickerGrid();
         }
 
         private bool isSelecting = false;
         private void SelectButton_Click(object sender, RoutedEventArgs e)
         {
             isSelecting ^= true;
-            SelectButton.Content = isSelecting ? "Cancel" : "Select";
+            SelectButton.Content = Localizer.Get(isSelecting ? "Button_Cancel" : "Button_Select");
             StickersGridView.SelectionMode = isSelecting ? ListViewSelectionMode.Multiple : ListViewSelectionMode.Single;
         }
 
@@ -363,31 +479,15 @@ namespace QStickerManager.Windows
 
             int selectedCount = StickersGridView.SelectedItems.Count;
             ActionButton.IsEnabled = selectedCount > 0;
-            StatusTextRight2.Text = $"{selectedCount} sticker{((selectedCount == 1) ? "" : "s")} selected";
+            StatusTextRight2.Text = Localizer.FormatCount(
+                selectedCount,
+                "Status_SelectedOne",
+                "Status_SelectedMany");
         }
 
         private async void RemoveSelected_Click(object sender, RoutedEventArgs e)
         {
             RemoveStickers(StickersGridView.SelectedItems.Cast<Sticker>());
-            //ConfirmRemoveContentDialogContent content = new(StickersGridView.SelectedItems.Count);
-            //ContentDialog dialog = new()
-            //{
-            //    Title = "Remove Sticker",
-            //    Content = content,
-            //    PrimaryButtonText = "Confirm",
-            //    CloseButtonText = "Cancel",
-            //    XamlRoot = Content.XamlRoot
-            //};
-
-            //if (await dialog.ShowAsync() == ContentDialogResult.None) return;
-            //bool deleteFile = content.DoDeleteFile;
-
-            //object[] selectedItems = StickersGridView.SelectedItems.ToArray();
-            //foreach (object? item in selectedItems)
-            //    if (item is Sticker sticker)
-            //        stickerRepository.Remove(sticker, deleteFile);
-
-            //stickerRepository.UpdateMetaFile();
         }
 
         private void SelectedMoveToFront_Click(object sender, RoutedEventArgs e)
@@ -395,6 +495,7 @@ namespace QStickerManager.Windows
             List<Sticker> selected = [.. StickersGridView.SelectedItems.Reverse().Cast<Sticker>()];
             foreach (Sticker sticker in selected)
                 stickerRepository.MoveToFront(sticker);
+            RefreshStickerGrid();
         }
 
         private async void RemoveStickers(IEnumerable<Sticker> stickers)
@@ -403,10 +504,10 @@ namespace QStickerManager.Windows
             ConfirmRemoveContentDialogContent content = new(stickers.Count());
             ContentDialog dialog = new()
             {
-                Title = "Remove Sticker",
+                Title = Localizer.Get("RemoveSticker_Title"),
                 Content = content,
-                PrimaryButtonText = "Confirm",
-                CloseButtonText = "Cancel",
+                PrimaryButtonText = Localizer.Get("Button_Confirm"),
+                CloseButtonText = Localizer.Get("Button_Cancel"),
                 XamlRoot = Content.XamlRoot
             };
 
@@ -417,6 +518,7 @@ namespace QStickerManager.Windows
                 stickerRepository.Remove(sticker, deleteFile);
 
             stickerRepository.UpdateMetaFile();
+            RefreshStickers();
         }
 
         private async void ExportSticker_Click(object sender, RoutedEventArgs e)
@@ -429,7 +531,7 @@ namespace QStickerManager.Windows
                 SuggestedFileName = Path.GetFileNameWithoutExtension(sticker.Path)
             };
             picker.FileTypeChoices.Add(
-                $"{Path.GetExtension(sticker.Path).ToUpperInvariant()} file",
+                Localizer.Format("FileType_File", Path.GetExtension(sticker.Path).ToUpperInvariant()),
                 [Path.GetExtension(sticker.Path)]);
 
             PickFileResult? file = await picker.PickSaveFileAsync();
@@ -437,7 +539,7 @@ namespace QStickerManager.Windows
             if (string.IsNullOrWhiteSpace(path)) return;
 
             File.Copy(sticker.Path, path, true);
-            StatusTextRight2.Text = $"{Path.GetFileName(sticker.Path)} exported";
+            StatusTextRight2.Text = Localizer.Format("Status_ExportedFile", Path.GetFileName(sticker.Path));
         }
 
         private async void CopySticker_Click(object sender, RoutedEventArgs e)
@@ -446,7 +548,7 @@ namespace QStickerManager.Windows
                 return;
 
             await CopyStickersToClipboard([sticker]);
-            StatusTextRight2.Text = $"{Path.GetFileName(sticker.Path)} copied to clipboard";
+            StatusTextRight2.Text = Localizer.Format("Status_CopiedFile", Path.GetFileName(sticker.Path));
         }
 
         private async void EditStickerDescription_Click(object sender, RoutedEventArgs e)
@@ -457,7 +559,7 @@ namespace QStickerManager.Windows
             TextBox descriptionBox = new()
             {
                 Text = sticker.Description,
-                PlaceholderText = "Enter a description",
+                PlaceholderText = Localizer.Get("EditDescription_Placeholder"),
                 AcceptsReturn = true,
                 TextWrapping = TextWrapping.Wrap,
                 MinWidth = 320,
@@ -466,10 +568,10 @@ namespace QStickerManager.Windows
 
             ContentDialog dialog = new()
             {
-                Title = "Edit sticker description",
+                Title = Localizer.Get("EditDescription_Title"),
                 Content = descriptionBox,
-                PrimaryButtonText = "Save",
-                CloseButtonText = "Cancel",
+                PrimaryButtonText = Localizer.Get("Button_Save"),
+                CloseButtonText = Localizer.Get("Button_Cancel"),
                 XamlRoot = Content.XamlRoot
             };
 
@@ -478,7 +580,66 @@ namespace QStickerManager.Windows
 
             sticker.Description = descriptionBox.Text.Trim();
             stickerRepository.UpdateMetaFile();
+            RefreshStickerGrid();
             StatusTextLeft.Text = sticker.Description;
+        }
+
+        private async void EditStickerKeywords_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is not MenuFlyoutItem item || item.DataContext is not Sticker sticker)
+                return;
+
+            await EditKeywordsAsync([sticker]);
+        }
+
+        private async void EditSelectedKeywords_Click(object sender, RoutedEventArgs e)
+        {
+            List<Sticker> stickers = [.. StickersGridView.SelectedItems.Cast<Sticker>()];
+            if (stickers.Count == 0)
+            {
+                await MessageBox(
+                    Localizer.Get("NoStickersSelected_Title"),
+                    Localizer.Get("NoStickersSelected_EditKeywords"));
+                return;
+            }
+
+            await EditKeywordsAsync(stickers);
+        }
+
+        private async Task EditKeywordsAsync(IReadOnlyList<Sticker> stickers)
+        {
+            EditKeywordsContentDialogContent content = new(stickers, stickerRepository.Keywords);
+
+            ContentDialog dialog = new()
+            {
+                Title = stickers.Count == 1
+                    ? Localizer.Get("EditKeywords_Title")
+                    : Localizer.Format("EditKeywords_ManyTitle", stickers.Count),
+                Content = content,
+                PrimaryButtonText = Localizer.Get("Button_Save"),
+                CloseButtonText = Localizer.Get("Button_Cancel"),
+                XamlRoot = Content.XamlRoot
+            };
+
+            if (await dialog.ShowAsync() != ContentDialogResult.Primary)
+                return;
+
+            foreach (Sticker sticker in stickers)
+            {
+                sticker.Keywords.RemoveAll(keyword => content.KeywordsToRemove.Contains(keyword));
+                foreach (string keyword in content.KeywordsToAdd)
+                {
+                    if (!sticker.Keywords.Any(existing =>
+                        string.Equals(existing, keyword, StringComparison.OrdinalIgnoreCase)))
+                    {
+                        sticker.Keywords.Add(keyword);
+                    }
+                }
+            }
+
+            stickerRepository.RegisterKeywords(content.KeywordsToAdd);
+            stickerRepository.UpdateMetaFile();
+            RefreshStickers();
         }
 
         private async void CopySelected_Click(object sender, RoutedEventArgs e)
@@ -486,12 +647,17 @@ namespace QStickerManager.Windows
             List<Sticker> stickers = [.. StickersGridView.SelectedItems.Cast<Sticker>()];
             if (stickers.Count == 0)
             {
-                await MessageBox("No stickers selected", "Select one or more stickers before copying.");
+                await MessageBox(
+                    Localizer.Get("NoStickersSelected_Title"),
+                    Localizer.Get("NoStickersSelected_Copy"));
                 return;
             }
 
             await CopyStickersToClipboard(stickers);
-            StatusTextRight2.Text = $"Copied {stickers.Count} sticker{(stickers.Count == 1 ? "" : "s")} to clipboard";
+            StatusTextRight2.Text = Localizer.FormatCount(
+                stickers.Count,
+                "Status_CopiedOne",
+                "Status_CopiedMany");
         }
 
         private void RemoveSticker_Click(object sender, RoutedEventArgs e)
@@ -517,7 +683,7 @@ namespace QStickerManager.Windows
             if (e.DataView.Contains(StandardDataFormats.StorageItems)
                 /* || e.DataView.Contains(StandardDataFormats.Bitmap)*/)
             {
-                e.DragUIOverride.Caption = "Import stickers";
+                e.DragUIOverride.Caption = Localizer.Get("Drag_ImportStickers");
                 e.AcceptedOperation = DataPackageOperation.Copy;
             }
             //if (e.DataView.Contains(StandardDataFormats.Bitmap))
@@ -541,8 +707,13 @@ namespace QStickerManager.Windows
                 IEnumerable<IStorageItem> notSupportedFiles = items.Where(f => !StickerFileTypes.IsSupportedImportFile(f.Path));
                 if (notSupportedFiles.Any())
                 {
-                    await MessageBox("Some files couldn't be imported",
-                        $"{notSupportedFiles.Count()} file{(notSupportedFiles.Count() == 1 ? " is" : "s are")} in unsupported formats");
+                    int unsupportedCount = notSupportedFiles.Count();
+                    await MessageBox(
+                        Localizer.Get("UnsupportedFiles_Title"),
+                        Localizer.FormatCount(
+                            unsupportedCount,
+                            "UnsupportedFiles_One",
+                            "UnsupportedFiles_Many"));
                 }
 
                 await ImportStickers(items.Select(f => f.Path).Where(StickerFileTypes.IsSupportedImportFile));

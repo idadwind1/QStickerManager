@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="QStickerManager.Pages.EditKeywordsContentDialogContent"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:CommunityToolkit.WinUI.Controls">
+
+    <StackPanel Spacing="12">
+        <StackPanel Spacing="2">
+            <TextBlock
+                x:Uid="EditKeywordsHeading"
+                FontWeight="SemiBold" />
+            <TextBlock
+                x:Uid="EditKeywordsHint"
+                Opacity="0.7"
+                TextWrapping="Wrap" />
+        </StackPanel>
+
+        <TextBlock
+            x:Name="InstructionText"
+            TextWrapping="Wrap" />
+
+        <controls:TokenizingTextBox
+            x:Uid="EditKeywordsBox"
+            x:Name="KeywordBox"
+            MinWidth="360" />
+
+        <TextBlock
+            x:Uid="EditKeywordsNoCommon"
+            x:Name="NoCommonKeywordsText"
+            Opacity="0.7"
+            TextWrapping="Wrap"
+            Visibility="Collapsed" />
+    </StackPanel>
+</Page>

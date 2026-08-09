@@ -18,6 +18,12 @@ namespace QStickerManager.Stickers
             public required IReadOnlyList<string> Keywords { get; init; }
         }
 
+        private sealed class StickerArchiveMetadata
+        {
+            public List<string> Keywords { get; init; } = [];
+            public List<StickerArchiveEntry> Stickers { get; init; } = [];
+        }
+
         public List<StickerImportSource> ReadArchive(string zipPath)
         {
             using ZipArchive archive = ZipFile.OpenRead(zipPath);
@@ -47,12 +53,20 @@ namespace QStickerManager.Stickers
             using Stream stream = metaEntry.Open();
             using StreamWriter writer = new(stream);
             writer.Write(JsonSerializer.Serialize(
-                stickers.Select(sticker => new StickerArchiveEntry
+                new StickerArchiveMetadata
                 {
-                    Path = Path.GetFileName(sticker.Path),
-                    Description = sticker.Description,
-                    Keywords = sticker.Keywords
-                }).ToList(),
+                    Keywords = stickers
+                        .SelectMany(sticker => sticker.Keywords)
+                        .Distinct(StringComparer.OrdinalIgnoreCase)
+                        .OrderBy(keyword => keyword, StringComparer.OrdinalIgnoreCase)
+                        .ToList(),
+                    Stickers = stickers.Select(sticker => new StickerArchiveEntry
+                    {
+                        Path = Path.GetFileName(sticker.Path),
+                        Description = sticker.Description,
+                        Keywords = sticker.Keywords
+                    }).ToList()
+                },
                 jsonSerializerOptions));
         }
 
@@ -61,7 +75,11 @@ namespace QStickerManager.Stickers
             using Stream stream = metaEntry.Open();
             using StreamReader reader = new(stream);
             string json = reader.ReadToEnd();
-            List<StickerArchiveEntry>? stickers = JsonSerializer.Deserialize<List<StickerArchiveEntry>>(json);
+            StickerArchiveMetadata? metadata = JsonSerializer.Deserialize<StickerArchiveMetadata>(json);
+            List<StickerArchiveEntry>? stickers = metadata?.Stickers;
+            if (stickers is null)
+                stickers = JsonSerializer.Deserialize<List<StickerArchiveEntry>>(json);
+
             if (stickers is null)
                 return [];
 

@@ -9,7 +9,7 @@
     mc:Ignorable="d">
 
     <StackPanel Spacing="8">
-        <TextBlock Text="Sticker already exists: " TextWrapping="Wrap" />
+        <TextBlock x:Uid="StickerFoundInstruction" TextWrapping="Wrap" />
         <Image Height="100" Name="Sticker" />
         <TextBlock Name="Hash" />
     </StackPanel>

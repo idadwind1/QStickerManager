@@ -1,6 +1,7 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.Windows.Storage.Pickers;
+using QStickerManager.Localization;
 using QStickerManager.Settings;
 using QStickerManager.Stickers;
 using System;
@@ -25,18 +26,23 @@ namespace QStickerManager.Windows
         private readonly AppSettings appSettings;
 
         public event EventHandler? StoragePathChanged;
+        public event EventHandler? StickersChanged;
 
         public Settings(AppSettings appSettings, StickerRepository stickerRepository)
         {
             this.appSettings = appSettings;
             this.stickerRepository = stickerRepository;
             InitializeComponent();
+            Title = Localizer.Get("Settings_Title");
         }
 
         public string LibraryDirectory => stickerRepository.LibraryDirectory;
 
         public string VersionText
-            => $"Version {Assembly.GetExecutingAssembly().GetName().Version?.ToString(3) ?? "Unknown"}";
+            => Localizer.Format(
+                "Version_Format",
+                Assembly.GetExecutingAssembly().GetName().Version?.ToString(3)
+                    ?? Localizer.Get("Version_Unknown"));
 
         private async void ChangeStickerLocation_Click(object sender, RoutedEventArgs e)
         {
@@ -45,14 +51,14 @@ namespace QStickerManager.Windows
             if (folder is null)
                 return;
 
-            await ChangeBasePathAsync(folder.Path, "Change library location?");
+            await ChangeBasePathAsync(folder.Path, Localizer.Get("ChangeLibrary_Title"));
         }
 
         private async void ResetSettings_Click(object sender, RoutedEventArgs e)
         {
             await ChangeBasePathAsync(
                 appSettings.DefaultBasePath,
-                "Reset settings?");
+                Localizer.Get("ResetSettings_Title"));
         }
 
         private async Task ChangeBasePathAsync(string newBasePath, string title)
@@ -63,17 +69,19 @@ namespace QStickerManager.Windows
                 Path.GetFullPath(LibraryDirectory),
                 StringComparison.OrdinalIgnoreCase))
             {
-                await ShowMessageAsync("Settings already reset", "The library is already using the default folder.");
+                await ShowMessageAsync(
+                    Localizer.Get("SettingsAlreadyReset_Title"),
+                    Localizer.Get("SettingsAlreadyReset_Message"));
                 return;
             }
 
             ContentDialog dialog = new()
             {
                 Title = title,
-                Content = $"Move the library from:\n{LibraryDirectory}\n\nto:\n{normalizedBasePath}?",
-                PrimaryButtonText = "Move files",
-                SecondaryButtonText = "Use new folder",
-                CloseButtonText = "Cancel",
+                Content = Localizer.Format("MoveLibrary_Message", LibraryDirectory, normalizedBasePath),
+                PrimaryButtonText = Localizer.Get("Button_MoveFiles"),
+                SecondaryButtonText = Localizer.Get("Button_UseNewFolder"),
+                CloseButtonText = Localizer.Get("Button_Cancel"),
                 XamlRoot = Content.XamlRoot
             };
 
@@ -91,10 +99,13 @@ namespace QStickerManager.Windows
                     {
                         ContentDialog replaceDialog = new()
                         {
-                            Title = "Replace existing files?",
-                            Content = $"{conflicts.Count} file{(conflicts.Count == 1 ? "" : "s")} already exist in the new folder. Replace them?",
-                            PrimaryButtonText = "Replace",
-                            CloseButtonText = "Cancel",
+                            Title = Localizer.Get("ReplaceFiles_Title"),
+                            Content = Localizer.FormatCount(
+                                conflicts.Count,
+                                "ReplaceFiles_One",
+                                "ReplaceFiles_Many"),
+                            PrimaryButtonText = Localizer.Get("Button_Replace"),
+                            CloseButtonText = Localizer.Get("Button_Cancel"),
                             XamlRoot = Content.XamlRoot
                         };
 
@@ -115,7 +126,7 @@ namespace QStickerManager.Windows
             }
             catch (Exception exception)
             {
-                await ShowMessageAsync("Could not change sticker location", exception.Message);
+                await ShowMessageAsync(Localizer.Get("ChangeLocationFailed_Title"), exception.Message);
             }
         }
 
@@ -125,7 +136,7 @@ namespace QStickerManager.Windows
             {
                 Title = title,
                 Content = message,
-                CloseButtonText = "OK",
+                CloseButtonText = Localizer.Get("Button_OK"),
                 XamlRoot = Content.XamlRoot
             };
 
@@ -146,13 +157,34 @@ namespace QStickerManager.Windows
             int deletedCount = stickerRepository.ClearGifCache();
             ContentDialog dialog = new()
             {
-                Title = "Cache cleared",
-                Content = $"{deletedCount} generated GIF file{(deletedCount == 1 ? "" : "s")} deleted.",
-                CloseButtonText = "OK",
+                Title = Localizer.Get("CacheCleared_Title"),
+                Content = Localizer.FormatCount(
+                    deletedCount,
+                    "CacheCleared_One",
+                    "CacheCleared_Many"),
+                CloseButtonText = Localizer.Get("Button_OK"),
                 XamlRoot = Content.XamlRoot
             };
 
             await dialog.ShowAsync();
+        }
+
+        private async void ShuffleStickers_Click(object sender, RoutedEventArgs e)
+        {
+            ContentDialog dialog = new()
+            {
+                Title = Localizer.Get("Shuffle_Title"),
+                Content = Localizer.Get("Shuffle_Message"),
+                PrimaryButtonText = Localizer.Get("Button_Shuffle"),
+                CloseButtonText = Localizer.Get("Button_Cancel"),
+                XamlRoot = Content.XamlRoot
+            };
+
+            if (await dialog.ShowAsync() != ContentDialogResult.Primary)
+                return;
+
+            stickerRepository.Shuffle();
+            StickersChanged?.Invoke(this, EventArgs.Empty);
         }
     }
 }

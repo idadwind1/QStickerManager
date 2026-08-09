@@ -6,8 +6,7 @@
     xmlns:local="using:QStickerManager.Windows"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
-    Title="Settings">
+    mc:Ignorable="d">
 
     <Window.SystemBackdrop>
         <MicaBackdrop />
@@ -21,12 +20,12 @@
             HorizontalAlignment="Center">
 
             <TextBlock
-                Text="Settings"
+                x:Uid="SettingsHeading"
                 Style="{StaticResource SubtitleTextBlockStyle}" />
 
             <StackPanel Spacing="8">
                 <TextBlock
-                    Text="Storage"
+                    x:Uid="SettingsStorageHeading"
                     Style="{StaticResource BodyStrongTextBlockStyle}" />
 
                 <Border
@@ -37,26 +36,26 @@
                         ColumnDefinitions="Auto,*,Auto,Auto"
                         RowDefinitions="Auto,Auto">
                         <TextBlock
+                            x:Uid="SettingsLibraryLocation"
                             Grid.Column="0"
-                            Text="Library location"
                             FontSize="16" />
                         <TextBlock
+                            x:Uid="SettingsLibraryDescription"
                             Grid.Column="0"
                             Grid.Row="1"
-                            Text="The folder containing meta.json, stickers, thumbnails, and generated GIFs."
                             TextWrapping="Wrap"
                             Opacity="0.7"
                             Margin="0,4,16,0" />
                         <Button
+                            x:Uid="SettingsOpenFolderButton"
                             Grid.Column="1"
                             Grid.RowSpan="2"
-                            Content="Open folder"
                             Click="OpenStickerFolder_Click"
                             VerticalAlignment="Center" />
                         <Button
+                            x:Uid="SettingsChangeLocationButton"
                             Grid.Column="2"
                             Grid.RowSpan="2"
-                            Content="Change location"
                             Click="ChangeStickerLocation_Click"
                             VerticalAlignment="Center"
                             Margin="8,0,0,0" />
@@ -64,22 +63,22 @@
                 </Border>
 
                 <TextBox
+                    x:Uid="SettingsPathTextBox"
                     x:Name="BasePathText"
                     Text="{x:Bind LibraryDirectory}"
                     IsReadOnly="True"
                     IsHitTestVisible="False"
-                    TextWrapping="Wrap"
-                    Header="Path" />
+                    TextWrapping="Wrap" />
 
                 <Button
-                    Content="Reset to default"
+                    x:Uid="SettingsResetButton"
                     Click="ResetSettings_Click"
                     HorizontalAlignment="Left" />
             </StackPanel>
 
             <StackPanel Spacing="8">
                 <TextBlock
-                    Text="Maintenance"
+                    x:Uid="SettingsMaintenanceHeading"
                     Style="{StaticResource BodyStrongTextBlockStyle}" />
 
                 <Border
@@ -92,18 +91,43 @@
                             Spacing="4">
                             <TextBlock
                                 Grid.Column="0"
-                                Text="Clear GIF cache"
+                                x:Uid="SettingsClearCacheHeading"
                                 FontSize="16" />
                             <TextBlock
                                 Grid.Column="0"
-                                Text="Deletes generated GIF files. Original stickers and thumbnails are kept."
+                                x:Uid="SettingsClearCacheDescription"
                                 TextWrapping="Wrap"
                                 Opacity="0.7" />
                         </StackPanel>
                         <Button
+                            x:Uid="SettingsClearCacheButton"
                             Grid.Column="1"
-                            Content="Clear cache"
                             Click="ClearCache_Click"
+                            VerticalAlignment="Center"
+                            Margin="16,0,0,0" />
+                    </Grid>
+                </Border>
+
+                <Border
+                    Padding="16"
+                    CornerRadius="8"
+                    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <StackPanel
+                            Grid.Column="0"
+                            Spacing="4">
+                            <TextBlock
+                                x:Uid="SettingsShuffleHeading"
+                                FontSize="16" />
+                            <TextBlock
+                                x:Uid="SettingsShuffleDescription"
+                                TextWrapping="Wrap"
+                                Opacity="0.7" />
+                        </StackPanel>
+                        <Button
+                            x:Uid="SettingsShuffleButton"
+                            Grid.Column="1"
+                            Click="ShuffleStickers_Click"
                             VerticalAlignment="Center"
                             Margin="16,0,0,0" />
                     </Grid>
@@ -112,7 +136,7 @@
 
             <StackPanel Spacing="8">
                 <TextBlock
-                    Text="About"
+                    x:Uid="SettingsAboutHeading"
                     Style="{StaticResource BodyStrongTextBlockStyle}" />
 
                 <Border

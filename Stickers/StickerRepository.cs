@@ -31,6 +31,7 @@ namespace QStickerManager.Stickers
         }
 
         public ObservableCollection<Sticker> Stickers;
+        public ObservableCollection<string> Keywords { get; } = [];
 
         public string LibraryDirectory => BasePath;
 
@@ -53,15 +54,23 @@ namespace QStickerManager.Stickers
             string json = File.ReadAllText(MetaFilePath);
             try
             {
-                List<Sticker>? stickers = JsonSerializer.Deserialize<List<Sticker>>(json);
+                using JsonDocument document = JsonDocument.Parse(json);
+                List<Sticker>? stickers = document.RootElement.ValueKind == JsonValueKind.Array
+                    ? document.RootElement.Deserialize<List<Sticker>>()
+                    : document.RootElement.TryGetProperty("stickers", out JsonElement stickersElement)
+                        ? stickersElement.Deserialize<List<Sticker>>()
+                        : null;
 
-                if (stickers is null) return;
+                if (stickers is null)
+                    return;
 
                 foreach (var sticker in stickers)
                 {
                     NormalizeStickerPaths(sticker);
                     AddSticker(sticker);
                 }
+
+                RefreshKeywordCatalog();
             }
             catch (JsonException) { }
         }
@@ -79,9 +88,51 @@ namespace QStickerManager.Stickers
         /// </summary>
         public void UpdateMetaFile()
         {
-            string json = JsonSerializer.Serialize(Stickers.Reverse(), JsonSerializerOptions);
+            Dictionary<string, int> keywordCounts = BuildKeywordCounts();
+            RefreshKeywordCatalog(keywordCounts.Keys);
+
+            StickerMetadata metadata = new()
+            {
+                Keywords = keywordCounts,
+                Stickers = [.. Stickers.Reverse()]
+            };
+            string json = JsonSerializer.Serialize(metadata, JsonSerializerOptions);
 
             File.WriteAllText(MetaFilePath, json);
+        }
+
+        public void RegisterKeywords(IEnumerable<string> keywords)
+        {
+            RefreshKeywordCatalog();
+        }
+
+        private Dictionary<string, int> BuildKeywordCounts()
+        {
+            return Stickers
+                .SelectMany(sticker => sticker.Keywords)
+                .Select(keyword => keyword.Trim())
+                .Where(keyword => !string.IsNullOrWhiteSpace(keyword))
+                .GroupBy(keyword => keyword, StringComparer.OrdinalIgnoreCase)
+                .ToDictionary(
+                    group => group.First(),
+                    group => group.Count(),
+                    StringComparer.OrdinalIgnoreCase);
+        }
+
+        private void RefreshKeywordCatalog()
+            => RefreshKeywordCatalog(BuildKeywordCounts().Keys);
+
+        private void RefreshKeywordCatalog(IEnumerable<string> keywords)
+        {
+            Keywords.Clear();
+            foreach (string keyword in keywords
+                .Where(keyword => !string.IsNullOrWhiteSpace(keyword))
+                .Select(keyword => keyword.Trim())
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .OrderBy(keyword => keyword, StringComparer.OrdinalIgnoreCase))
+            {
+                Keywords.Add(keyword);
+            }
         }
 
         private readonly ImageProcessor imageProcessor;
@@ -117,7 +168,7 @@ namespace QStickerManager.Stickers
                 File.Delete(newPath);
 
             imageProcessor.CreateThumbnail(originalPath, thumbnailPath, 256);
-            imageProcessor.ConvertToGif(originalPath, newPath);
+            File.Copy(originalPath, newPath, true);
 
             sticker = new Sticker
             {
@@ -137,6 +188,7 @@ namespace QStickerManager.Stickers
                 return false;
 
             AddSticker(sticker);
+            RefreshKeywordCatalog();
             return true;
         }
 
@@ -242,6 +294,7 @@ namespace QStickerManager.Stickers
             //    throw new StickerNotFoundException(hash);
             _stickers.Remove(sticker.Hash);
             Stickers.Remove(sticker);
+            RefreshKeywordCatalog();
             if (removeFile && sticker is not null)
             {
                 if (File.Exists(sticker.Path))
@@ -289,6 +342,24 @@ namespace QStickerManager.Stickers
         {
             Stickers.Remove(sticker);
             Stickers.Insert(0, sticker);
+        }
+
+        public void Shuffle()
+        {
+            List<Sticker> shuffled = [.. Stickers];
+
+            for (int index = shuffled.Count - 1; index > 0; index--)
+            {
+                int swapIndex = Random.Shared.Next(index + 1);
+                (shuffled[index], shuffled[swapIndex]) =
+                    (shuffled[swapIndex], shuffled[index]);
+            }
+
+            Stickers.Clear();
+            foreach (Sticker sticker in shuffled)
+                Stickers.Add(sticker);
+
+            UpdateMetaFile();
         }
     }
 }

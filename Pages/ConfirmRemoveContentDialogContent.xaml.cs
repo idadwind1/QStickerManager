@@ -5,6 +5,7 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
+using QStickerManager.Localization;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -26,7 +27,10 @@ namespace QStickerManager.Pages
         public ConfirmRemoveContentDialogContent(int removeCount)
         {
             InitializeComponent();
-            TextBox.Text = $"Are you sure to remove {removeCount} sticker{(removeCount == 1 ? "" : "s")}?";
+            TextBox.Text = Localizer.FormatCount(
+                removeCount,
+                "ConfirmRemove_One",
+                "ConfirmRemove_Many");
         }
 
         public bool DoDeleteFile

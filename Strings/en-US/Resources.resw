@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType><xsd:sequence><xsd:element name="value" type="xsd:string" minOccurs="0" /></xsd:sequence><xsd:attribute name="name" use="required" type="xsd:string" /><xsd:attribute name="type" type="xsd:string" /><xsd:attribute name="mimetype" type="xsd:string" /><xsd:attribute ref="xml:space" /></xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly"><xsd:complexType><xsd:attribute name="alias" type="xsd:string" /><xsd:attribute name="name" type="xsd:string" /></xsd:complexType></xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType><xsd:sequence><xsd:element name="value" type="xsd:string" minOccurs="0" /><xsd:element name="comment" type="xsd:string" minOccurs="0" /></xsd:sequence><xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" /><xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" /><xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" /><xsd:attribute ref="xml:space" /></xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader"><xsd:complexType><xsd:sequence><xsd:element name="value" type="xsd:string" minOccurs="0" /></xsd:sequence><xsd:attribute name="name" type="xsd:string" use="required" /></xsd:complexType></xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+
+  <!-- Main window -->
+  <data name="MainSearchBox.PlaceholderText" xml:space="preserve"><value>Search stickers...</value></data>
+  <data name="MainImportButton.Content" xml:space="preserve"><value>Import</value></data>
+  <data name="MainImportPrompt.Text" xml:space="preserve"><value>Import from?</value></data>
+  <data name="MainImportFilesButton.Content" xml:space="preserve"><value>Files</value></data>
+  <data name="MainImportZipButton.Content" xml:space="preserve"><value>Zip</value></data>
+  <data name="MainImportFoldersButton.Content" xml:space="preserve"><value>Folders</value></data>
+  <data name="MainImportQQButton.Content" xml:space="preserve"><value>QQ</value></data>
+  <data name="MainSelectButton.Content" xml:space="preserve"><value>Select</value></data>
+  <data name="MainExportSubmenu.Text" xml:space="preserve"><value>Export</value></data>
+  <data name="MainExportZipItem.Text" xml:space="preserve"><value>Export as zip file</value></data>
+  <data name="MainExportFilesItem.Text" xml:space="preserve"><value>Export as files</value></data>
+  <data name="MainCopySelectedItem.Text" xml:space="preserve"><value>Copy</value></data>
+  <data name="MainEditSelectedKeywordsItem.Text" xml:space="preserve"><value>Edit keywords</value></data>
+  <data name="MainRemoveSelectedItem.Text" xml:space="preserve"><value>Remove</value></data>
+  <data name="MainMoveSelectedToFrontItem.Text" xml:space="preserve"><value>Move to front</value></data>
+  <data name="MainNoKeywordsText.Text" xml:space="preserve"><value>No keywords yet</value></data>
+  <data name="StickerCopyItem.Text" xml:space="preserve"><value>Copy</value></data>
+  <data name="StickerEditDescriptionItem.Text" xml:space="preserve"><value>Edit description</value></data>
+  <data name="StickerEditKeywordsItem.Text" xml:space="preserve"><value>Edit keywords</value></data>
+  <data name="StickerExportItem.Text" xml:space="preserve"><value>Export</value></data>
+  <data name="StickerRemoveItem.Text" xml:space="preserve"><value>Remove</value></data>
+  <data name="StickerMoveToFrontItem.Text" xml:space="preserve"><value>Move to front</value></data>
+
+  <!-- Settings window -->
+  <data name="Settings_Title" xml:space="preserve"><value>Settings</value></data>
+  <data name="SettingsHeading.Text" xml:space="preserve"><value>Settings</value></data>
+  <data name="SettingsStorageHeading.Text" xml:space="preserve"><value>Storage</value></data>
+  <data name="SettingsLibraryLocation.Text" xml:space="preserve"><value>Library location</value></data>
+  <data name="SettingsLibraryDescription.Text" xml:space="preserve"><value>The folder containing meta.json, stickers, thumbnails, and generated GIFs.</value></data>
+  <data name="SettingsOpenFolderButton.Content" xml:space="preserve"><value>Open folder</value></data>
+  <data name="SettingsChangeLocationButton.Content" xml:space="preserve"><value>Change location</value></data>
+  <data name="SettingsPathTextBox.Header" xml:space="preserve"><value>Path</value></data>
+  <data name="SettingsResetButton.Content" xml:space="preserve"><value>Reset to default</value></data>
+  <data name="SettingsMaintenanceHeading.Text" xml:space="preserve"><value>Maintenance</value></data>
+  <data name="SettingsClearCacheHeading.Text" xml:space="preserve"><value>Clear GIF cache</value></data>
+  <data name="SettingsClearCacheDescription.Text" xml:space="preserve"><value>Deletes generated GIF files. Original stickers and thumbnails are kept.</value></data>
+  <data name="SettingsClearCacheButton.Content" xml:space="preserve"><value>Clear cache</value></data>
+  <data name="SettingsShuffleHeading.Text" xml:space="preserve"><value>Shuffle stickers</value></data>
+  <data name="SettingsShuffleDescription.Text" xml:space="preserve"><value>Randomizes the order of all stickers in the library.</value></data>
+  <data name="SettingsShuffleButton.Content" xml:space="preserve"><value>Shuffle</value></data>
+  <data name="SettingsAboutHeading.Text" xml:space="preserve"><value>About</value></data>
+
+  <!-- Dialog content pages -->
+  <data name="ConfirmRemoveDeleteFileCheckBox.Content" xml:space="preserve"><value>Do not delete file on disk</value></data>
+  <data name="SelectQQUsersInstruction.Text" xml:space="preserve"><value>Multiple QQ users found. Select the ones you want to import from:</value></data>
+  <data name="StickerFoundInstruction.Text" xml:space="preserve"><value>Sticker already exists:</value></data>
+  <data name="EditKeywordsHeading.Text" xml:space="preserve"><value>Keywords</value></data>
+  <data name="EditKeywordsHint.Text" xml:space="preserve"><value>Press Enter to add a keyword.</value></data>
+  <data name="EditKeywordsBox.PlaceholderText" xml:space="preserve"><value>Add or search keywords</value></data>
+  <data name="EditKeywordsNoCommon.Text" xml:space="preserve"><value>The selected stickers have no shared keywords.</value></data>
+
+  <!-- Shared commands -->
+  <data name="Button_OK" xml:space="preserve"><value>OK</value></data>
+  <data name="Button_Cancel" xml:space="preserve"><value>Cancel</value></data>
+  <data name="Button_Abort" xml:space="preserve"><value>Abort</value></data>
+  <data name="Button_Save" xml:space="preserve"><value>Save</value></data>
+  <data name="Button_Confirm" xml:space="preserve"><value>Confirm</value></data>
+  <data name="Button_Skip" xml:space="preserve"><value>Skip</value></data>
+  <data name="Button_SkipAll" xml:space="preserve"><value>Skip for all</value></data>
+  <data name="Button_MoveFiles" xml:space="preserve"><value>Move files</value></data>
+  <data name="Button_UseNewFolder" xml:space="preserve"><value>Use new folder</value></data>
+  <data name="Button_Replace" xml:space="preserve"><value>Replace</value></data>
+  <data name="Button_Shuffle" xml:space="preserve"><value>Shuffle</value></data>
+  <data name="Button_Select" xml:space="preserve"><value>Select</value></data>
+
+  <!-- Runtime messages -->
+  <data name="Version_Format" xml:space="preserve"><value>Version {0}</value></data>
+  <data name="Version_Unknown" xml:space="preserve"><value>Unknown</value></data>
+  <data name="QQFilesNotFound_Title" xml:space="preserve"><value>Files not found</value></data>
+  <data name="QQFilesNotFound_Message" xml:space="preserve"><value>QQ stickers were not found. They may have been moved.</value></data>
+  <data name="SelectQQUsers_Title" xml:space="preserve"><value>Select QQ users</value></data>
+  <data name="StickerExists_Title" xml:space="preserve"><value>Sticker already exists</value></data>
+  <data name="Status_Importing" xml:space="preserve"><value>Importing stickers...</value></data>
+  <data name="Status_ImportingCountOne" xml:space="preserve"><value>Importing {0} sticker...</value></data>
+  <data name="Status_ImportingCountMany" xml:space="preserve"><value>Importing {0} stickers...</value></data>
+  <data name="Status_ImportComplete" xml:space="preserve"><value>Done importing</value></data>
+  <data name="Status_LoadedOne" xml:space="preserve"><value>{0} sticker loaded</value></data>
+  <data name="Status_LoadedMany" xml:space="preserve"><value>{0} stickers loaded</value></data>
+  <data name="NoStickersSelected_Title" xml:space="preserve"><value>No stickers selected</value></data>
+  <data name="NoStickersSelected_Export" xml:space="preserve"><value>Select one or more stickers before exporting.</value></data>
+  <data name="NoStickersSelected_EditKeywords" xml:space="preserve"><value>Select one or more stickers before editing keywords.</value></data>
+  <data name="NoStickersSelected_Copy" xml:space="preserve"><value>Select one or more stickers before copying.</value></data>
+  <data name="FileType_ZipArchive" xml:space="preserve"><value>Zip archive</value></data>
+  <data name="SuggestedFileName_Stickers" xml:space="preserve"><value>stickers</value></data>
+  <data name="FileType_File" xml:space="preserve"><value>{0} file</value></data>
+  <data name="Status_ExportedZipOne" xml:space="preserve"><value>Exported {0} sticker to zip</value></data>
+  <data name="Status_ExportedZipMany" xml:space="preserve"><value>Exported {0} stickers to zip</value></data>
+  <data name="Status_CopiedFile" xml:space="preserve"><value>{0} copied to clipboard</value></data>
+  <data name="Status_SelectedOne" xml:space="preserve"><value>{0} sticker selected</value></data>
+  <data name="Status_SelectedMany" xml:space="preserve"><value>{0} stickers selected</value></data>
+  <data name="RemoveSticker_Title" xml:space="preserve"><value>Remove sticker</value></data>
+  <data name="ConfirmRemove_One" xml:space="preserve"><value>Are you sure you want to remove {0} sticker?</value></data>
+  <data name="ConfirmRemove_Many" xml:space="preserve"><value>Are you sure you want to remove {0} stickers?</value></data>
+  <data name="Status_ExportedFile" xml:space="preserve"><value>{0} exported</value></data>
+  <data name="EditDescription_Placeholder" xml:space="preserve"><value>Enter a description</value></data>
+  <data name="EditDescription_Title" xml:space="preserve"><value>Edit sticker description</value></data>
+  <data name="EditKeywords_Title" xml:space="preserve"><value>Edit keywords</value></data>
+  <data name="EditKeywords_ManyTitle" xml:space="preserve"><value>Edit keywords for {0} stickers</value></data>
+  <data name="EditKeywords_OneInstruction" xml:space="preserve"><value>Edit keywords:</value></data>
+  <data name="EditKeywords_ManyInstruction" xml:space="preserve"><value>Shared keywords are shown. Changes apply to all selected stickers:</value></data>
+  <data name="Status_CopiedOne" xml:space="preserve"><value>Copied {0} sticker to clipboard</value></data>
+  <data name="Status_CopiedMany" xml:space="preserve"><value>Copied {0} stickers to clipboard</value></data>
+  <data name="Drag_ImportStickers" xml:space="preserve"><value>Import stickers</value></data>
+  <data name="UnsupportedFiles_Title" xml:space="preserve"><value>Some files couldn't be imported</value></data>
+  <data name="UnsupportedFiles_One" xml:space="preserve"><value>{0} file is in an unsupported format.</value></data>
+  <data name="UnsupportedFiles_Many" xml:space="preserve"><value>{0} files are in unsupported formats.</value></data>
+  <data name="StickerHash_Format" xml:space="preserve"><value>(hash is {0})</value></data>
+  <data name="ChangeLibrary_Title" xml:space="preserve"><value>Change library location?</value></data>
+  <data name="ResetSettings_Title" xml:space="preserve"><value>Reset settings?</value></data>
+  <data name="SettingsAlreadyReset_Title" xml:space="preserve"><value>Settings already reset</value></data>
+  <data name="SettingsAlreadyReset_Message" xml:space="preserve"><value>The library is already using the default folder.</value></data>
+  <data name="MoveLibrary_Message" xml:space="preserve"><value>Move the library from:&#xA;{0}&#xA;&#xA;to:&#xA;{1}?</value></data>
+  <data name="ReplaceFiles_Title" xml:space="preserve"><value>Replace existing files?</value></data>
+  <data name="ReplaceFiles_One" xml:space="preserve"><value>{0} file already exists in the new folder. Replace it?</value></data>
+  <data name="ReplaceFiles_Many" xml:space="preserve"><value>{0} files already exist in the new folder. Replace them?</value></data>
+  <data name="ChangeLocationFailed_Title" xml:space="preserve"><value>Could not change sticker location</value></data>
+  <data name="CacheCleared_Title" xml:space="preserve"><value>Cache cleared</value></data>
+  <data name="CacheCleared_One" xml:space="preserve"><value>{0} generated GIF file deleted.</value></data>
+  <data name="CacheCleared_Many" xml:space="preserve"><value>{0} generated GIF files deleted.</value></data>
+  <data name="Shuffle_Title" xml:space="preserve"><value>Shuffle stickers?</value></data>
+  <data name="Shuffle_Message" xml:space="preserve"><value>This will randomize the order of all stickers in the library. The new order will be saved.</value></data>
+</root>

@@ -16,6 +16,7 @@
   <ItemGroup>
     <None Remove="BlankPage1.xaml" />
     <None Remove="Pages\ConfirmRemoveContentDialogContent.xaml" />
+    <None Remove="Pages\EditKeywordsContentDialogContent.xaml" />
     <None Remove="Pages\SelectQQUsersContentDialogContent.xaml" />
     <None Remove="Pages\StickerFoundContentDialogContent.xaml" />
     <None Remove="Windows\Settings.xaml" />
@@ -44,12 +45,16 @@
     <ProjectCapability Include="Msix" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="CommunityToolkit.WinUI.Controls.TokenizingTextBox" Version="8.2.251219" />
     <PackageReference Include="Magick.NET-Q16-AnyCPU" Version="14.15.0" />
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.28000.2270" />
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="2.2.0" />
     <PackageReference Include="SkiaSharp" Version="4.150.1" />
   </ItemGroup>
   <ItemGroup>
+    <Page Update="Pages\EditKeywordsContentDialogContent.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Update="Pages\SelectQQUsersContentDialogContent.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>

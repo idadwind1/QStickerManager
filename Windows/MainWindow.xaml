@@ -26,24 +26,27 @@
               ColumnSpacing="6">
 
             <AutoSuggestBox
+                x:Uid="MainSearchBox"
                 Grid.Column="0"
-                PlaceholderText="Search stickers..."
-                QueryIcon="Find" />
+                QueryIcon="Find"
+                Name="SearchBox"
+                TextChanged="SearchBox_TextChanged" />
 
             <Button
+                x:Uid="MainImportButton"
                 Grid.Column="1"
-                Content="Import">
+                >
                 <Button.Flyout>
                     <Flyout>
                         <StackPanel>
-                            <TextBlock Text="Import from?" Margin="0,0,0,12" />
+                            <TextBlock x:Uid="MainImportPrompt" Margin="0,0,0,12" />
                             <StackPanel
                                 Orientation="Horizontal"
                                 Spacing="8">
-                                <Button Content="Files" Click="ImportFiles_Click" />
-                                <Button Content="Zip" Click="ImportZip_Click" />
-                                <Button Content="Folders" Click="ImportFolders_Click" />
-                                <Button Content="QQ" Click="ImportQQ_Click" />
+                                <Button x:Uid="MainImportFilesButton" Click="ImportFiles_Click" />
+                                <Button x:Uid="MainImportZipButton" Click="ImportZip_Click" />
+                                <Button x:Uid="MainImportFoldersButton" Click="ImportFolders_Click" />
+                                <Button x:Uid="MainImportQQButton" Click="ImportQQ_Click" />
                             </StackPanel>
                         </StackPanel>
                     </Flyout>
@@ -51,8 +54,8 @@
             </Button>
 
             <Button
+                x:Uid="MainSelectButton"
                 Grid.Column="2"
-                Content="Select"
                 Click="SelectButton_Click"
                 Name="SelectButton" />
 
@@ -62,16 +65,17 @@
                 Name="ActionButton">
                 <Button.Flyout>
                     <MenuFlyout>
-                        <MenuFlyoutSubItem Text="Export">
+                        <MenuFlyoutSubItem x:Uid="MainExportSubmenu">
                             <MenuFlyoutSubItem.Icon>
                                 <FontIcon Glyph="&#xEE71;"/>
                             </MenuFlyoutSubItem.Icon>
-                            <MenuFlyoutItem Text="Export as zip file" Click="ExportZipFile_Click" />
-                            <MenuFlyoutItem Text="Export as files" Click="ExportFiles_Click" />
+                            <MenuFlyoutItem x:Uid="MainExportZipItem" Click="ExportZipFile_Click" />
+                            <MenuFlyoutItem x:Uid="MainExportFilesItem" Click="ExportFiles_Click" />
                         </MenuFlyoutSubItem>
-                        <MenuFlyoutItem Text="Copy" Click="CopySelected_Click" Icon="Copy" />
-                        <MenuFlyoutItem Text="Remove" Click="RemoveSelected_Click" Icon="Delete" />
-                        <MenuFlyoutItem Text="Move to front" Click="SelectedMoveToFront_Click" Icon="Up" />
+                        <MenuFlyoutItem x:Uid="MainCopySelectedItem" Click="CopySelected_Click" Icon="Copy" />
+                        <MenuFlyoutItem x:Uid="MainEditSelectedKeywordsItem" Click="EditSelectedKeywords_Click" Icon="Tag" />
+                        <MenuFlyoutItem x:Uid="MainRemoveSelectedItem" Click="RemoveSelected_Click" Icon="Delete" />
+                        <MenuFlyoutItem x:Uid="MainMoveSelectedToFrontItem" Click="SelectedMoveToFront_Click" Icon="Up" />
                     </MenuFlyout>
                 </Button.Flyout>
                 <FontIcon Glyph="&#xE712;" />
@@ -102,12 +106,15 @@
 
             <StackPanel
                 Orientation="Horizontal"
-                Spacing="8">
+                Spacing="8"
+                Name="KeywordFiltersPanel">
 
-                <ToggleButton Content="Recent"/>
-                <ToggleButton Content="Favorites"/>
-
-                <Button Content="+" />
+                <TextBlock
+                    x:Uid="MainNoKeywordsText"
+                    Name="NoKeywordsText"
+                    Opacity="0.7"
+                    VerticalAlignment="Center"
+                    Visibility="Collapsed" />
 
             </StackPanel>
 
@@ -118,7 +125,6 @@
 
             <GridView
                 Grid.Row="2"
-                ItemsSource="{x:Bind stickerRepository.Stickers, Mode=OneWay}"
                 IsItemClickEnabled="True"
                 SelectionMode="Single"
                 CanReorderItems="True"
@@ -143,11 +149,12 @@
 
                             <Grid.ContextFlyout>
                                 <MenuFlyout>
-                                    <MenuFlyoutItem Text="Copy" Click="CopySticker_Click" Icon="Copy" />
-                                    <MenuFlyoutItem Text="Edit description" Click="EditStickerDescription_Click" Icon="Edit" />
-                                    <MenuFlyoutItem Text="Export" Click="ExportSticker_Click" Icon="Share" />
-                                    <MenuFlyoutItem Text="Remove" Click="RemoveSticker_Click" Icon="Delete" />
-                                    <MenuFlyoutItem Text="Move to front" Click="StickerMoveToFront_Click" Icon="Up" />
+                                    <MenuFlyoutItem x:Uid="StickerCopyItem" Click="CopySticker_Click" Icon="Copy" />
+                                    <MenuFlyoutItem x:Uid="StickerEditDescriptionItem" Click="EditStickerDescription_Click" Icon="Edit" />
+                                    <MenuFlyoutItem x:Uid="StickerEditKeywordsItem" Click="EditStickerKeywords_Click" Icon="Tag" />
+                                    <MenuFlyoutItem x:Uid="StickerExportItem" Click="ExportSticker_Click" Icon="Share" />
+                                    <MenuFlyoutItem x:Uid="StickerRemoveItem" Click="RemoveSticker_Click" Icon="Delete" />
+                                    <MenuFlyoutItem x:Uid="StickerMoveToFrontItem" Click="StickerMoveToFront_Click" Icon="Up" />
                                 </MenuFlyout>
                             </Grid.ContextFlyout>
 

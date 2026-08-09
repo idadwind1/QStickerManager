@@ -1,5 +1,6 @@
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media.Imaging;
+using QStickerManager.Localization;
 using System;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -16,7 +17,7 @@ namespace QStickerManager.Pages
         {
             InitializeComponent();
             Sticker.Source = new BitmapImage(new Uri(stickerPath));
-            Hash.Text = $"(hash is {hash})";
+            Hash.Text = Localizer.Format("StickerHash_Format", hash);
         }
     }
 }
