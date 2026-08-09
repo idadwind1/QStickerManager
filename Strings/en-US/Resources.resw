@@ -27,12 +27,12 @@
   <data name="MainImportButton.Content" xml:space="preserve"><value>Import</value></data>
   <data name="MainImportPrompt.Text" xml:space="preserve"><value>Import from?</value></data>
   <data name="MainImportFilesButton.Content" xml:space="preserve"><value>Files</value></data>
-  <data name="MainImportZipButton.Content" xml:space="preserve"><value>Zip</value></data>
+  <data name="MainImportZipButton.Content" xml:space="preserve"><value>ZIP</value></data>
   <data name="MainImportFoldersButton.Content" xml:space="preserve"><value>Folders</value></data>
   <data name="MainImportQQButton.Content" xml:space="preserve"><value>QQ</value></data>
   <data name="MainSelectButton.Content" xml:space="preserve"><value>Select</value></data>
   <data name="MainExportSubmenu.Text" xml:space="preserve"><value>Export</value></data>
-  <data name="MainExportZipItem.Text" xml:space="preserve"><value>Export as zip file</value></data>
+  <data name="MainExportZipItem.Text" xml:space="preserve"><value>Export as ZIP file</value></data>
   <data name="MainExportFilesItem.Text" xml:space="preserve"><value>Export as files</value></data>
   <data name="MainCopySelectedItem.Text" xml:space="preserve"><value>Copy</value></data>
   <data name="MainEditSelectedKeywordsItem.Text" xml:space="preserve"><value>Edit keywords</value></data>
@@ -105,11 +105,11 @@
   <data name="NoStickersSelected_Export" xml:space="preserve"><value>Select one or more stickers before exporting.</value></data>
   <data name="NoStickersSelected_EditKeywords" xml:space="preserve"><value>Select one or more stickers before editing keywords.</value></data>
   <data name="NoStickersSelected_Copy" xml:space="preserve"><value>Select one or more stickers before copying.</value></data>
-  <data name="FileType_ZipArchive" xml:space="preserve"><value>Zip archive</value></data>
+  <data name="FileType_ZipArchive" xml:space="preserve"><value>ZIP archive</value></data>
   <data name="SuggestedFileName_Stickers" xml:space="preserve"><value>stickers</value></data>
   <data name="FileType_File" xml:space="preserve"><value>{0} file</value></data>
-  <data name="Status_ExportedZipOne" xml:space="preserve"><value>Exported {0} sticker to zip</value></data>
-  <data name="Status_ExportedZipMany" xml:space="preserve"><value>Exported {0} stickers to zip</value></data>
+  <data name="Status_ExportedZipOne" xml:space="preserve"><value>Exported {0} sticker to ZIP</value></data>
+  <data name="Status_ExportedZipMany" xml:space="preserve"><value>Exported {0} stickers to ZIP</value></data>
   <data name="Status_CopiedFile" xml:space="preserve"><value>{0} copied to clipboard</value></data>
   <data name="Status_SelectedOne" xml:space="preserve"><value>{0} sticker selected</value></data>
   <data name="Status_SelectedMany" xml:space="preserve"><value>{0} stickers selected</value></data>

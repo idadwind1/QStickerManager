@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType><xsd:sequence><xsd:element name="value" type="xsd:string" minOccurs="0" /></xsd:sequence><xsd:attribute name="name" use="required" type="xsd:string" /><xsd:attribute name="type" type="xsd:string" /><xsd:attribute name="mimetype" type="xsd:string" /><xsd:attribute ref="xml:space" /></xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly"><xsd:complexType><xsd:attribute name="alias" type="xsd:string" /><xsd:attribute name="name" type="xsd:string" /></xsd:complexType></xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType><xsd:sequence><xsd:element name="value" type="xsd:string" minOccurs="0" /><xsd:element name="comment" type="xsd:string" minOccurs="0" /></xsd:sequence><xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" /><xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" /><xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" /><xsd:attribute ref="xml:space" /></xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader"><xsd:complexType><xsd:sequence><xsd:element name="value" type="xsd:string" minOccurs="0" /></xsd:sequence><xsd:attribute name="name" type="xsd:string" use="required" /></xsd:complexType></xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+
+  <!-- Main window -->
+  <data name="MainSearchBox.PlaceholderText" xml:space="preserve"><value>搜索表情包……</value></data>
+  <data name="MainImportButton.Content" xml:space="preserve"><value>导入</value></data>
+  <data name="MainImportPrompt.Text" xml:space="preserve"><value>导入来源？</value></data>
+  <data name="MainImportFilesButton.Content" xml:space="preserve"><value>文件</value></data>
+  <data name="MainImportZipButton.Content" xml:space="preserve"><value>ZIP</value></data>
+  <data name="MainImportFoldersButton.Content" xml:space="preserve"><value>文件夹</value></data>
+  <data name="MainImportQQButton.Content" xml:space="preserve"><value>QQ</value></data>
+  <data name="MainSelectButton.Content" xml:space="preserve"><value>选择</value></data>
+  <data name="MainExportSubmenu.Text" xml:space="preserve"><value>导出</value></data>
+  <data name="MainExportZipItem.Text" xml:space="preserve"><value>导出为 ZIP</value></data>
+  <data name="MainExportFilesItem.Text" xml:space="preserve"><value>导出为文件</value></data>
+  <data name="MainCopySelectedItem.Text" xml:space="preserve"><value>复制</value></data>
+  <data name="MainEditSelectedKeywordsItem.Text" xml:space="preserve"><value>编辑关键词</value></data>
+  <data name="MainRemoveSelectedItem.Text" xml:space="preserve"><value>移除</value></data>
+  <data name="MainMoveSelectedToFrontItem.Text" xml:space="preserve"><value>移到最前</value></data>
+  <data name="MainNoKeywordsText.Text" xml:space="preserve"><value>暂无关键词</value></data>
+  <data name="StickerCopyItem.Text" xml:space="preserve"><value>复制</value></data>
+  <data name="StickerEditDescriptionItem.Text" xml:space="preserve"><value>编辑描述</value></data>
+  <data name="StickerEditKeywordsItem.Text" xml:space="preserve"><value>编辑关键词</value></data>
+  <data name="StickerExportItem.Text" xml:space="preserve"><value>导出</value></data>
+  <data name="StickerRemoveItem.Text" xml:space="preserve"><value>移除</value></data>
+  <data name="StickerMoveToFrontItem.Text" xml:space="preserve"><value>移到最前</value></data>
+
+  <!-- Settings window -->
+  <data name="Settings_Title" xml:space="preserve"><value>设置</value></data>
+  <data name="SettingsHeading.Text" xml:space="preserve"><value>设置</value></data>
+  <data name="SettingsStorageHeading.Text" xml:space="preserve"><value>存储</value></data>
+  <data name="SettingsLibraryLocation.Text" xml:space="preserve"><value>表情包库位置</value></data>
+  <data name="SettingsLibraryDescription.Text" xml:space="preserve"><value>该文件夹包含 meta.json、表情包、缩略图，以及生成的 GIF。</value></data>
+  <data name="SettingsOpenFolderButton.Content" xml:space="preserve"><value>打开文件夹</value></data>
+  <data name="SettingsChangeLocationButton.Content" xml:space="preserve"><value>更改位置</value></data>
+  <data name="SettingsPathTextBox.Header" xml:space="preserve"><value>路径</value></data>
+  <data name="SettingsResetButton.Content" xml:space="preserve"><value>恢复默认设置</value></data>
+  <data name="SettingsMaintenanceHeading.Text" xml:space="preserve"><value>维护</value></data>
+  <data name="SettingsClearCacheHeading.Text" xml:space="preserve"><value>清理 GIF 缓存</value></data>
+  <data name="SettingsClearCacheDescription.Text" xml:space="preserve"><value>删除生成的 GIF 文件，保留原始表情包和缩略图。</value></data>
+  <data name="SettingsClearCacheButton.Content" xml:space="preserve"><value>清理缓存</value></data>
+  <data name="SettingsShuffleHeading.Text" xml:space="preserve"><value>打乱表情包</value></data>
+  <data name="SettingsShuffleDescription.Text" xml:space="preserve"><value>随机打乱库中所有表情包的顺序。</value></data>
+  <data name="SettingsShuffleButton.Content" xml:space="preserve"><value>打乱</value></data>
+  <data name="SettingsAboutHeading.Text" xml:space="preserve"><value>关于</value></data>
+
+  <!-- Dialog content pages -->
+  <data name="ConfirmRemoveDeleteFileCheckBox.Content" xml:space="preserve"><value>不删除磁盘上的原文件</value></data>
+  <data name="SelectQQUsersInstruction.Text" xml:space="preserve"><value>发现多个 QQ 用户，请选择要导入的用户：</value></data>
+  <data name="StickerFoundInstruction.Text" xml:space="preserve"><value>表情包已存在：</value></data>
+  <data name="EditKeywordsHeading.Text" xml:space="preserve"><value>关键词</value></data>
+  <data name="EditKeywordsHint.Text" xml:space="preserve"><value>按 Enter 添加关键词。</value></data>
+  <data name="EditKeywordsBox.PlaceholderText" xml:space="preserve"><value>添加或搜索关键词</value></data>
+  <data name="EditKeywordsNoCommon.Text" xml:space="preserve"><value>所选的表情包没有共有的关键词。</value></data>
+
+  <!-- Shared commands -->
+  <data name="Button_OK" xml:space="preserve"><value>确定</value></data>
+  <data name="Button_Cancel" xml:space="preserve"><value>取消</value></data>
+  <data name="Button_Abort" xml:space="preserve"><value>中止</value></data>
+  <data name="Button_Save" xml:space="preserve"><value>保存</value></data>
+  <data name="Button_Confirm" xml:space="preserve"><value>确认</value></data>
+  <data name="Button_Skip" xml:space="preserve"><value>跳过</value></data>
+  <data name="Button_SkipAll" xml:space="preserve"><value>跳过所有</value></data>
+  <data name="Button_MoveFiles" xml:space="preserve"><value>移动文件</value></data>
+  <data name="Button_UseNewFolder" xml:space="preserve"><value>使用新文件夹</value></data>
+  <data name="Button_Replace" xml:space="preserve"><value>替换</value></data>
+  <data name="Button_Shuffle" xml:space="preserve"><value>打乱</value></data>
+  <data name="Button_Select" xml:space="preserve"><value>选择</value></data>
+
+  <!-- Runtime messages -->
+  <data name="Version_Format" xml:space="preserve"><value>版本 {0}</value></data>
+  <data name="Version_Unknown" xml:space="preserve"><value>未知</value></data>
+  <data name="QQFilesNotFound_Title" xml:space="preserve"><value>找不到文件</value></data>
+  <data name="QQFilesNotFound_Message" xml:space="preserve"><value>找不到 QQ 表情包。它们可能被移动了。</value></data>
+  <data name="SelectQQUsers_Title" xml:space="preserve"><value>选择 QQ 用户</value></data>
+  <data name="StickerExists_Title" xml:space="preserve"><value>表情包已存在</value></data>
+  <data name="Status_Importing" xml:space="preserve"><value>正在导入表情包……</value></data>
+  <data name="Status_ImportingCountOne" xml:space="preserve"><value>正在导入 {0} 个表情包……</value></data>
+  <data name="Status_ImportingCountMany" xml:space="preserve"><value>正在导入 {0} 个表情包……</value></data>
+  <data name="Status_ImportComplete" xml:space="preserve"><value>导入完成</value></data>
+  <data name="Status_LoadedOne" xml:space="preserve"><value>已加载 {0} 个表情包</value></data>
+  <data name="Status_LoadedMany" xml:space="preserve"><value>已加载 {0} 个表情包</value></data>
+  <data name="NoStickersSelected_Title" xml:space="preserve"><value>未选择表情包</value></data>
+  <data name="NoStickersSelected_Export" xml:space="preserve"><value>导出前，请选择一个或多个表情包。</value></data>
+  <data name="NoStickersSelected_EditKeywords" xml:space="preserve"><value>编辑关键词前，请选择一个或多个表情包。</value></data>
+  <data name="NoStickersSelected_Copy" xml:space="preserve"><value>复制前，请选择一个或多个表情包。</value></data>
+  <data name="FileType_ZipArchive" xml:space="preserve"><value>ZIP 压缩包</value></data>
+  <data name="SuggestedFileName_Stickers" xml:space="preserve"><value>表情包</value></data>
+  <data name="FileType_File" xml:space="preserve"><value>{0} 文件</value></data>
+  <data name="Status_ExportedZipOne" xml:space="preserve"><value>已将 {0} 个表情包导出为 ZIP</value></data>
+  <data name="Status_ExportedZipMany" xml:space="preserve"><value>已将 {0} 个表情包导出为 ZIP</value></data>
+  <data name="Status_CopiedFile" xml:space="preserve"><value>已复制 {0} 到剪贴板</value></data>
+  <data name="Status_SelectedOne" xml:space="preserve"><value>已选择 {0} 个表情包</value></data>
+  <data name="Status_SelectedMany" xml:space="preserve"><value>已选择 {0} 个表情包</value></data>
+  <data name="RemoveSticker_Title" xml:space="preserve"><value>移除表情包</value></data>
+  <data name="ConfirmRemove_One" xml:space="preserve"><value>确定移除 {0} 个表情包吗？</value></data>
+  <data name="ConfirmRemove_Many" xml:space="preserve"><value>确定移除 {0} 个表情包吗？</value></data>
+  <data name="Status_ExportedFile" xml:space="preserve"><value>已导出 {0}</value></data>
+  <data name="EditDescription_Placeholder" xml:space="preserve"><value>输入描述</value></data>
+  <data name="EditDescription_Title" xml:space="preserve"><value>编辑表情包的描述</value></data>
+  <data name="EditKeywords_Title" xml:space="preserve"><value>编辑关键词</value></data>
+  <data name="EditKeywords_ManyTitle" xml:space="preserve"><value>编辑 {0} 个表情包的关键词</value></data>
+  <data name="EditKeywords_OneInstruction" xml:space="preserve"><value>编辑关键词：</value></data>
+  <data name="EditKeywords_ManyInstruction" xml:space="preserve"><value>显示共有的关键词。更改将应用于所有选中的表情包：</value></data>
+  <data name="Status_CopiedOne" xml:space="preserve"><value>已将 {0} 个表情包复制到剪贴板</value></data>
+  <data name="Status_CopiedMany" xml:space="preserve"><value>已将 {0} 个表情包复制到剪贴板</value></data>
+  <data name="Drag_ImportStickers" xml:space="preserve"><value>导入表情包</value></data>
+  <data name="UnsupportedFiles_Title" xml:space="preserve"><value>部分文件无法导入</value></data>
+  <data name="UnsupportedFiles_One" xml:space="preserve"><value>{0} 个文件的格式不支持。</value></data>
+  <data name="UnsupportedFiles_Many" xml:space="preserve"><value>{0} 个文件的格式不支持。</value></data>
+  <data name="StickerHash_Format" xml:space="preserve"><value>（哈希值：{0}）</value></data>
+  <data name="ChangeLibrary_Title" xml:space="preserve"><value>确定更改表情包库位置吗？</value></data>
+  <data name="ResetSettings_Title" xml:space="preserve"><value>确定恢复默认设置吗？</value></data>
+  <data name="SettingsAlreadyReset_Title" xml:space="preserve"><value>已恢复默认设置</value></data>
+  <data name="SettingsAlreadyReset_Message" xml:space="preserve"><value>表情包库已重置为默认文件夹。</value></data>
+  <data name="MoveLibrary_Message" xml:space="preserve"><value>确定把表情包库从：&#xA;{0}&#xA;&#xA;移动到：&#xA;{1} 吗？</value></data>
+  <data name="ReplaceFiles_Title" xml:space="preserve"><value>是否替换已有文件？</value></data>
+  <data name="ReplaceFiles_One" xml:space="preserve"><value>新文件夹中已存在 {0} 个文件，是否替换？</value></data>
+  <data name="ReplaceFiles_Many" xml:space="preserve"><value>新文件夹中已存在 {0} 个文件，是否替换？</value></data>
+  <data name="ChangeLocationFailed_Title" xml:space="preserve"><value>无法更改表情包库位置</value></data>
+  <data name="CacheCleared_Title" xml:space="preserve"><value>缓存已清理</value></data>
+  <data name="CacheCleared_One" xml:space="preserve"><value>已删除 {0} 个生成的 GIF 文件。</value></data>
+  <data name="CacheCleared_Many" xml:space="preserve"><value>已删除 {0} 个生成的 GIF 文件。</value></data>
+  <data name="Shuffle_Title" xml:space="preserve"><value>确定打乱表情包吗？</value></data>
+  <data name="Shuffle_Message" xml:space="preserve"><value>这将随机打乱库中所有表情包的顺序。新顺序将会被保存。</value></data>
+</root>
